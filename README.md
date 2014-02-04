@@ -10,7 +10,7 @@ Supported formats are below.
 - URL encode
 - Quoted-Printable
 
-# Start server
+## Start server
 
 ```sh
 $ gem install bundler
