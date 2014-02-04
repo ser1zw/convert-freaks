@@ -1,0 +1,53 @@
+<!-- -*- mode: html; coding: utf-8 -*- -->
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link type="text/css" rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/css/main.css">
+    <title>Convert Freaks</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Convert Freaks</h1>
+      <div class="starter-template">
+        <p class="lead">Convert texts to multiple formats.</p>
+      </div>
+
+      <h2>Input</h2>
+      <div class="form-group">
+	<label for="charset" class="col-sm-1 control-label">Charset</label>
+	<select id="charset" class="form-control">
+	  <option value="utf8">UTF-8</option>
+	  <option value="sjis">Shift_JIS</option>
+	  <option value="iso2022jp">ISO-2022-JP</option>
+	  <option value="eucjp">EUC-JP</option>
+	</select>
+      </div>
+      <p>
+	<textarea id="input-data" placeholder="Enter text to convert..."></textarea>
+      </p>
+      <div class="btn btn-primary" onclick="convert()">Convert</div>
+      <div class="btn btn-primary" onclick="clearInputData()">Clear</div>
+      <hr />
+
+      <h2>Result</h2>
+      <caption class="text-left">Encode</caption>
+      <table id="encode-result" class="table table-hover table-bordered" border="0">
+	<tr><th>NO DATA</th></tr>
+      </table>
+
+      <caption class="text-left">Decode</caption>
+      <table id="decode-result" class="table table-hover table-bordered" border="0">
+	<tr><th>NO DATA</th></tr>
+      </table>
+    </div>
+
+  </body>
+  <script type="text/javascript" src="/lib/jquery/jquery-2.1.0.min.js"></script>
+  <script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/js/main.js"></script>
+</html>
+
