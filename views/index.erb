@@ -20,10 +20,9 @@
       <div class="form-group">
 	<label for="charset" class="col-sm-1 control-label">Charset</label>
 	<select id="charset" class="form-control">
-	  <option value="utf8">UTF-8</option>
-	  <option value="sjis">Shift_JIS</option>
-	  <option value="iso2022jp">ISO-2022-JP</option>
-	  <option value="eucjp">EUC-JP</option>
+	  <% @charset_map.each do |k, v| %>
+	  <option value="<%= k %>"><%= v %></option>
+	  <% end %>
 	</select>
       </div>
       <p>

@@ -4,6 +4,7 @@ require 'json'
 require './lib/converter'
 
 get '/' do
+  @charset_map = CHARSET_MAP
   erb :index
 end
 
