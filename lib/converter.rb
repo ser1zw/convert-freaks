@@ -17,22 +17,40 @@ NKF_FLAG_MAP = {
   eucjp: 'e'
 }
 
-
 String.class_eval do
   def safe_encode!(charset)
     self.encode!(charset, invalid: :replace, undef: :replace, replace: '?')
   end
 end
 
-def convert_internal(data, func)
-  converted = nil
-  begin
-    converted = func.call(data)
-  rescue => e
-    converted = 'FAILED TO CONVERT'
+class Converter
+  attr_reader :label
+
+  def initialize(label, encode_func, decode_func)
+    @label = label
+    @encode_func = encode_func
+    @decode_func = decode_func
   end
 
-  converted.safe_encode!(Encoding.default_external)
+  def encode(data)
+    convert_internal(data, @encode_func)
+  end
+
+  def decode(data)
+    convert_internal(data, @decode_func)
+  end
+
+  private
+  def convert_internal(data, func)
+    converted = nil
+    begin
+      converted = func.call(data)
+    rescue => e
+      converted = 'FAILED TO CONVERT'
+    end
+
+    converted.safe_encode!(Encoding.default_external)
+  end
 end
 
 def convert(data, charset_sym)
@@ -41,48 +59,34 @@ def convert(data, charset_sym)
   nkf_flag = NKF_FLAG_MAP[charset_sym]
   result = {}
 
-  # Base64
-  result[:base64] = {
-    label: "Base64",
-    data: {
-      encoded: convert_internal(data, ->(x) { Base64.encode64(x) }),
-      decoded: convert_internal(data, ->(x) { Base64.decode64(x).force_encoding(charset) })
-    }
-  }
+  base64 = Converter.new("Base64",
+                         ->(x) { Base64.encode64(x) },
+                         ->(x) { Base64.decode64(x).force_encoding(charset) })
 
-  # MIME
-  result[:mime] = {
-    label: "MIME",
-    data: {
-      encoded: convert_internal(data, ->(x) { NKF.nkf("-%sM" % nkf_flag, data) }),
-      decoded: convert_internal(data, ->(x) { NKF.nkf("-%sw" % nkf_flag.upcase, data) })
-    }
-  }
+  mime = Converter.new("MIME",
+                       ->(x) { NKF.nkf("-%sM" % nkf_flag, data) },
+                       ->(x) { NKF.nkf("-%sw" % nkf_flag.upcase, data) })
 
-  # URL encode
-  result[:url] = {
-    label: "URL encode",
-    data: {
-      encoded: convert_internal(data, ->(x) { CGI.escape(data) }),
-      decoded: convert_internal(data, ->(x) { CGI.unescape(data) })
-    }
-  }
+  urlencode = Converter.new("URL encode",
+                            ->(x) { CGI.escape(data) },
+                            ->(x) { CGI.unescape(data) })
 
-  # Quoted-Printable
-  result[:quotedprintable] = {
-    label: "Quoted-Printable",
-    data: {
-      encoded: convert_internal(data, ->(x) { NKF.nkf("-%sMQ" % nkf_flag, data) }),
-      decoded: convert_internal(data, ->(x) { NKF.nkf("-%swmQ" % nkf_flag.upcase, data) })
-    }
-  }
+  quotedprintable = Converter.new("Quoted-Printable",
+                                  ->(x) { NKF.nkf("-%sMQ" % nkf_flag, data) },
+                                  ->(x) { NKF.nkf("-%swmQ" % nkf_flag.upcase, data) })
 
-  # uuencode
-  result[:uuencode] = {
-    label: "uuencode",
-    data: {
-      encoded: convert_internal(data, ->(x) { [data].pack('u') }),
-      decoded: convert_internal(data, ->(x) { data.unpack('u').first.force_encoding(Encoding.default_external) })
+  uuencode = Converter.new("uuencode",
+                           ->(x) { [data].pack('u') },
+                           ->(x) { data.unpack('u').first.force_encoding(Encoding.default_external) })
+
+  [base64, mime, urlencode, quotedprintable, uuencode].each { |cvt|
+    key = cvt.label.gsub(/[^a-zA-Z0-9]/, '').downcase
+    result[key] = {
+      label: cvt.label,
+      data: {
+        encoded: cvt.encode(data),
+        decoded: cvt.decode(data)
+      }
     }
   }
 
