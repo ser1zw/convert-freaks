@@ -46,7 +46,7 @@ def convert(data, charset_sym)
     label: "Base64",
     data: {
       encoded: convert_internal(data, ->(x) { Base64.encode64(x) }),
-      decoded: convert_internal(data, ->(x) { Base64.decode64(x) })
+      decoded: convert_internal(data, ->(x) { Base64.decode64(x).force_encoding(charset) })
     }
   }
 
