@@ -17,13 +17,13 @@ NKF_FLAG_MAP = {
   eucjp: 'e'
 }
 
-String.class_eval do
-  def safe_encode!(charset)
-    self.encode!(charset, invalid: :replace, undef: :replace, replace: '?')
-  end
-end
-
 class Converter
+  String.class_eval do
+    def safe_encode!(charset)
+      self.encode!(charset, invalid: :replace, undef: :replace, replace: '?')
+    end
+  end
+
   attr_reader :label
 
   def initialize(label, encode_func, decode_func)
