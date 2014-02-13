@@ -1,7 +1,4 @@
 # -*- mode: ruby; coding: utf-8 -*-
-require 'base64'
-require 'nkf'
-require 'cgi/util'
 
 class Converter
   String.class_eval do
