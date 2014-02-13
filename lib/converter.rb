@@ -32,64 +32,24 @@ class Converter
     @decode_func = decode_func
   end
 
-  def encode(data)
-    convert_internal(data, @encode_func)
+  def encode(data, charset, nkf_flag)
+    convert_internal(data, @encode_func, charset, nkf_flag)
   end
 
-  def decode(data)
-    convert_internal(data, @decode_func)
+  def decode(data, charset, nkf_flag)
+    convert_internal(data, @decode_func, charset, nkf_flag)
   end
 
   private
-  def convert_internal(data, func)
+  def convert_internal(data, func, charset, nkf_flag)
     converted = nil
     begin
-      converted = func.call(data)
+      converted = func.call(data, charset, nkf_flag)
     rescue => e
       converted = 'FAILED TO CONVERT'
     end
 
     converted.safe_encode!(Encoding.default_external)
   end
-end
-
-def convert(data, charset_sym)
-  charset = CHARSET_MAP[charset_sym]
-  data.safe_encode!(charset)
-  nkf_flag = NKF_FLAG_MAP[charset_sym]
-  result = {}
-
-  base64 = Converter.new("Base64",
-                         ->(x) { Base64.encode64(x) },
-                         ->(x) { Base64.decode64(x).force_encoding(charset) })
-
-  mime = Converter.new("MIME",
-                       ->(x) { NKF.nkf("-%sM" % nkf_flag, data) },
-                       ->(x) { NKF.nkf("-%sw" % nkf_flag.upcase, data) })
-
-  urlencode = Converter.new("URL encode",
-                            ->(x) { CGI.escape(data) },
-                            ->(x) { CGI.unescape(data) })
-
-  quotedprintable = Converter.new("Quoted-Printable",
-                                  ->(x) { NKF.nkf("-%sMQ" % nkf_flag, data) },
-                                  ->(x) { NKF.nkf("-%swmQ" % nkf_flag.upcase, data) })
-
-  uuencode = Converter.new("uuencode",
-                           ->(x) { [data].pack('u') },
-                           ->(x) { data.unpack('u').first.force_encoding(Encoding.default_external) })
-
-  [base64, mime, urlencode, quotedprintable, uuencode].each { |cvt|
-    key = cvt.label.gsub(/[^a-zA-Z0-9]/, '').downcase
-    result[key] = {
-      label: cvt.label,
-      data: {
-        encoded: cvt.encode(data),
-        decoded: cvt.decode(data)
-      }
-    }
-  }
-
-  result
 end
 
