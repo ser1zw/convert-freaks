@@ -21,6 +21,7 @@ $ rackup config.ru
 ```
 
 View at: http://localhost:9292
+Also deployed at Heroku: http://convert-freaks.herokuapp.com/
 
 ## Dependencies
 
