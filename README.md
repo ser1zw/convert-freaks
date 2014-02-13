@@ -10,15 +10,17 @@ Supported formats are below.
 - URL encode
 - Quoted-Printable
 
-## Start server
+## Getting Started
 
 ```sh
+$ git clone https://github.com/ser1zw/convert-freaks.git
+$ cd convert-freaks
 $ gem install bundler
 $ bundle install
-$ ruby app.rb
+$ rackup config.ru
 ```
 
-View at: http://localhost:4567
+View at: http://localhost:9292
 
 ## Dependencies
 
