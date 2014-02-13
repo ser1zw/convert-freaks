@@ -16,7 +16,7 @@ class ConvertFreaks < Sinatra::Base
   end
 
   get '/' do
-    @charset_map = CHARSET_MAP
+    @charset_map = ConvertUtils::CHARSET_MAP
     erb :index
   end
 

@@ -5,6 +5,21 @@ require 'cgi/util'
 require_relative 'converter'
 
 module ConvertUtils
+
+  CHARSET_MAP = {
+    utf8: 'UTF-8',
+    sjis: 'Shift_JIS',
+    iso2022jp: 'ISO-2022-JP',
+    eucjp: 'EUC-JP'
+  }
+
+  NKF_FLAG_MAP = {
+    utf8: 'w',
+    sjis: 's',
+    iso2022jp: 'j',
+    eucjp: 'e'
+  }
+
   def self.create_converters
     base64 = Converter.new("Base64",
                            ->(data, charset, nkf_flag) { Base64.encode64(data) },
@@ -30,8 +45,8 @@ module ConvertUtils
   end
 
   def convert(data, charset_sym)
-    charset = Converter::CHARSET_MAP[charset_sym]
-    nkf_flag = Converter::NKF_FLAG_MAP[charset_sym]
+    charset = CHARSET_MAP[charset_sym]
+    nkf_flag = NKF_FLAG_MAP[charset_sym]
     data.safe_encode!(charset)
     result = {}
 
