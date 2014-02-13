@@ -30,9 +30,9 @@ class ConvertFreaks < Sinatra::Base
 
   helpers do
     def convert(data, charset_sym)
-      charset = CHARSET_MAP[charset_sym]
+      charset = Converter::CHARSET_MAP[charset_sym]
+      nkf_flag = Converter::NKF_FLAG_MAP[charset_sym]
       data.safe_encode!(charset)
-      nkf_flag = NKF_FLAG_MAP[charset_sym]
       result = {}
 
       @@converters.each { |cvt|

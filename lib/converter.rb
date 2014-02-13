@@ -3,26 +3,26 @@ require 'base64'
 require 'nkf'
 require 'cgi/util'
 
-CHARSET_MAP = {
-  utf8: 'UTF-8',
-  sjis: 'Shift_JIS',
-  iso2022jp: 'ISO-2022-JP',
-  eucjp: 'EUC-JP'
-}
-
-NKF_FLAG_MAP = {
-  utf8: 'w',
-  sjis: 's',
-  iso2022jp: 'j',
-  eucjp: 'e'
-}
-
 class Converter
   String.class_eval do
     def safe_encode!(charset)
       self.encode!(charset, invalid: :replace, undef: :replace, replace: '?')
     end
   end
+
+  CHARSET_MAP = {
+    utf8: 'UTF-8',
+    sjis: 'Shift_JIS',
+    iso2022jp: 'ISO-2022-JP',
+    eucjp: 'EUC-JP'
+  }
+
+  NKF_FLAG_MAP = {
+    utf8: 'w',
+    sjis: 's',
+    iso2022jp: 'j',
+    eucjp: 'e'
+  }
 
   attr_reader :label
 
