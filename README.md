@@ -28,7 +28,7 @@ Also deployed at Heroku: http://convert-freaks.herokuapp.com/
 
 - [Ruby 2.1.5](http://www.ruby-lang.org/) and some gems (see Gemfile)
 - [jQuery 2.1.1](http://jquery.com/)
-- [Bootstrap 3.1.0](http://getbootstrap.com/)
+- [Bootstrap 3.3.1](http://getbootstrap.com/)
 
 ## License
 
