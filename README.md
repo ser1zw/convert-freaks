@@ -27,7 +27,7 @@ Also deployed at Heroku: http://convert-freaks.herokuapp.com/
 ## Dependencies
 
 - [Ruby 2.1.5](http://www.ruby-lang.org/) and some gems (see Gemfile)
-- [jQuery 2.1.0](http://jquery.com/)
+- [jQuery 2.1.1](http://jquery.com/)
 - [Bootstrap 3.1.0](http://getbootstrap.com/)
 
 ## License
